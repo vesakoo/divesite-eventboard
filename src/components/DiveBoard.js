@@ -25,7 +25,7 @@ const DiveBoard = () => {
   const dispatch = useDispatch()
 
   const dives = useSelector(state => state.dives)
-  console.log('dives', dives) 
+  //console.log('dives', dives) 
 
   const addRow =()=>{
     dispatch(newDive())

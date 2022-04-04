@@ -15,6 +15,7 @@ import { //foo,
 import DiveTeam from './DiveTeam';
 import { useDispatch, useSelector } from 'react-redux';
 import {Button} from 'react-bootstrap'
+import Countdown from './Coundown';
 
 //import TimePicker from 'react-time-picker'
 
@@ -60,16 +61,24 @@ const Dive = (props) =>{
                 ?<input type='time' key={props.dive.planid}
                   onChange={(e)=>handleStartTime(e, 'editStartTime', props.dive.planid )}
                   value=  {new Date(new Date(props.dive.start).setSeconds(0)).toLocaleTimeString() }
+                  onBlur={(event)=>{disableEdit(event,'startTime')}} 
                   //pattern='[0-9]{2}:[0-9]{2}'
                   className="form-control"
+                  autoFocus NNL
                 />
                 :<input type='time' key={props.dive.planid}
                     onChange={(e)=>handleStartTime(e, 'editStartTime', props.dive.planid )}
+                    onBlur={(event)=>{disableEdit(event,'startTime')}} 
                     //pattern='[0-9]{2}:[0-9]{2}'
                     className="form-control"
                  />
                 }
-              <Button value='0:0:0' onClick={(e)=>handleStartTime(e,'editStartTime', props.dive.planid) }>
+              <Button
+                variant="secondary" 
+                size="sm" 
+                value='0:0:0' 
+                onClick={(e)=>handleStartTime(e,'editStartTime', props.dive.planid) }
+              >
                 Reset Dive
               </Button>
               </div>
@@ -152,10 +161,11 @@ const Dive = (props) =>{
   }
 
   const handleStartTime =(e) => {
+    console.log('handleStartTime val: ',e.target.value,e.target.value === '')
     if(includeInputVal){
       setIncludeInputVal(false)
    }
-  if(e.target.value){
+  if(e.target.value && e.target.value !== ''){
       const start = e.target.value !=='0:0:0'? new Date().setHours(...e.target.value.split(':')):0
       const stop =e.target.value !=='0:0:0'? props.dive.tot_time*60*1000 + start:0
       dispatch(setStartTimeInDive( {planId: props.dive.planid , startTime: start } )) 
@@ -188,6 +198,7 @@ const Dive = (props) =>{
         { inEditMode.status && inEditMode.colKey==='cavedur'
         ? inputEdit('cavedur',props.dive.planid,props.dive.cave_time)
         : <span>{props.dive.cave_time}  </span> }
+         <Countdown dive={props.dive} counting={props.dive.cave_time} />
       </td>
       <td onClick={(event)=>{enableEdit(event,'totdur')}}  
           style={tdStyle(props.dive.tot_time <5 || props.dive.tot_time < props.dive.cave_time)} 
@@ -195,12 +206,13 @@ const Dive = (props) =>{
         { inEditMode.status && inEditMode.colKey==='totdur'
         ? inputEdit('totdur',props.dive.planid,props.dive.tot_time)
         : <span>{props.dive.tot_time} </span> }
+         <Countdown dive={props.dive} counting={props.dive.tot_time} />
       </td> 
-      <td  onClick={(event)=>{ if(props.dive.start>0 && !(inEditMode.status && inEditMode.colKey==='startTime')){
+      <td  onClick={(event)=>{ if(props.dive.start>0 && ( inEditMode.colKey !=='editStartTime')){
                        enableEdit(event,'editStartTime')} 
                     }}  >
         { props.dive.start ===0 && !(inEditMode.status && inEditMode.colKey==='startTime')
-        ? < Button onClick={(e) =>{handleChange(e,'start',props.dive.planid)}}>Start</Button>
+        ? < Button  variant="secondary" size="sm" onClick={(e) =>{handleChange(e,'start',props.dive.planid)}}>Start</Button>
         : <div>
             {inputStartTime()}
           </div>

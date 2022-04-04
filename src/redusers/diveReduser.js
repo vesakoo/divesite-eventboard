@@ -111,14 +111,14 @@ const createPlanId = (state =[]) =>{
 
       },
       setStartTimeInDive(state,action){
-        console.log('action', action)
+        //console.log('action', action)
         const planId = action.payload.planId
         const newStarttime = action.payload.startTime
         const diveInState =state.find(dive => dive.planid === planId)
         diveInState.start=newStarttime
       },
       setStopTimeInDive(state,action){
-        console.log('action', action)
+        //console.log('action', action)
         const planId = action.payload.planId
         const newStoptime = action.payload.stopTime
         const diveInState =state.find(dive => dive.planid === planId)
