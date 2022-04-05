@@ -39,6 +39,14 @@ const onBlur = (event) => {
 
 };
 
+const onCancelStart =()=>{
+  dispatch(setStartTimeInDive({planId, startTime: 0  }))
+  setStartDive(0)
+  setValue("0:00")
+  console.log('Cancelling...')
+
+}
+
 const getSecondsFromHHMMSS = (value) => {
   const [str1, str2, str3] = value.split(":");
 
@@ -74,11 +82,18 @@ const toHHMMSS = (secs) => {
     .replace(/^0/, "");
 };
 
+const style={
+  width: '100%',
+  height: '100%'
+}
+
 return (
-  <div>{startDive?
-  <span><input type="text" onChange={onChange} onBlur={onBlur} value={value}  />
-  <Button>reset</Button></span>
-  : <Button onClick={()=>{handleStartDive()}}>Start</Button>}</div>
+  <td onClick={() =>{ if(startDive && !editMode){ setEditMode(true)} } } >{startDive?
+  <span>{editMode
+    ? <input type="text" onChange={onChange} onBlur={onBlur} value={value} autoFocus  /> 
+    : <div style={style}  >{value}{' '} <Button variant="secondary" size="sm" onClick={onCancelStart}>Cancel start</Button>  </div> 
+  }</span>
+  : <Button onClick={()=>{handleStartDive()}} variant="secondary" size="sm">Start</Button>}</td>
 );
 
 

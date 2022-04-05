@@ -13,6 +13,13 @@ const Countdown =({dive,counting}) => {
 
 
   useEffect(() => {
+    if(dive.start===0){console.log('nollaa pukkaa')
+      setMyTimer({visual: '--:--', value: 0})
+    }
+  },[dive]) 
+
+  useEffect(() => {
+    
     if(dive.start >0 && counting >0){
     const timer = setTimeout(() => {
       const timeLeft= counting*60000 + dive.start - Date.now()
@@ -29,12 +36,14 @@ const Countdown =({dive,counting}) => {
       if(timeLeft < 0){
         setStyle('danger')
       }
-
+      console.log('timer running')
       //  setMyTimer(new Date( counting * 60*1000 + dive.start - Date.now()).toLocaleTimeString('fi-FI'))
       setMyTimer( {visual: `${timeLeftHrs} h ${timeLeftMins} m ${timeLeftSec} s`, value: timeLeft }  )
     }, 1000);
     return () => clearTimeout(timer);
   }},[dive,myTimer])
+
+  
 
   //const dives = useSelector(state=>state.dives)
   //if(dive.start === 0){

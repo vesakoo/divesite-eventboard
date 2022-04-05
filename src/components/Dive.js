@@ -54,48 +54,6 @@ const Dive = (props) =>{
 
   )
 
-    const inputStartTime=() =>{
-       
-      return(
-        <>
-        {inEditMode.status && inEditMode.colKey==='startTime'
-            ?<div>{includeInputVal
-                ?<input type='time' key={props.dive.planid}
-                  onChange={(e)=>handleStartTime(e, 'editStartTime', props.dive.planid )}
-                  value=  {new Date(new Date(props.dive.start).setSeconds(0)).toLocaleTimeString() }
-                  onBlur={(event)=>{disableEdit(event,'startTime')}} 
-                  //pattern='[0-9]{2}:[0-9]{2}'
-                  className="form-control"
-                  autoFocus NNL
-                />
-                :<input type='time' key={props.dive.planid}
-                    onChange={(e)=>handleStartTime(e, 'editStartTime', props.dive.planid )}
-                    onBlur={(event)=>{disableEdit(event,'startTime')}} 
-                    //pattern='[0-9]{2}:[0-9]{2}'
-                    className="form-control"
-                 />
-                }
-              <Button
-                variant="secondary" 
-                size="sm" 
-                value='0:0:0' 
-                onClick={(e)=>handleStartTime(e,'editStartTime', props.dive.planid) }
-              >
-                Reset Dive
-              </Button>
-              </div>
-              
-            : <time onClick={(event)=>{enableEdit(event,'startTime')}}>
-                { new Date(props.dive.start).toLocaleTimeString('fi-FI')}
-              </time> 
-            }{console.log('rendering...')}
-            <StartDive />
-
-        </>
-      )
-      
-
-    }
   
   //todo add cancell
   const enableEdit = (event,colKey) =>{
@@ -122,9 +80,6 @@ const Dive = (props) =>{
     }
     if(colKey === 'totdur' && event.target.value===''){
       dispatch(setTotalDurationInDive({planId: props.dive.planid, totalTime: 0 }))    
-    }
-    if(colKey === 'startTime' && includeInputVal){
-      setIncludeInputVal(false)
     }
 
   }
@@ -154,7 +109,7 @@ const Dive = (props) =>{
         dispatch(setStopTimeInDive({planId: planid, stopTime: stop }))
       }
     }
-    if(field ==='start'){
+    /*if(field ==='start'){
       setdiveStartTimeBuff(new Date())
       setshowDiveTime(true)
       const start =Date.now()
@@ -166,9 +121,10 @@ const Dive = (props) =>{
     if(field==='startTimeBuff'){
       console.log('jaa aikaa', e.target.value)
       setdiveStartTimeBuff(e.target.value)
-    }
+    }*/
   }
 
+/*
   const handleStartTime =(e) => {
     console.log('handleStartTime val: ',e.target.value,e.target.value === '')
     if(includeInputVal){
@@ -181,7 +137,7 @@ const Dive = (props) =>{
       dispatch(setStopTimeInDive({planId: props.dive.planid , stopTime:  stop }))
      
     }  
-  }
+  }*/
 
   return (
     <tr>
@@ -227,9 +183,9 @@ const Dive = (props) =>{
           </div>
         } 
       </td>*/}
-      <td><StartDive initTime={props.dive.start} planId={props.dive.planid} /></td>
-      <td>{ props.dive.stop >0 
-            ?<span>{new Date(props.dive.stop).toLocaleTimeString('fi-FI') }</span>
+      <StartDive initTime={props.dive.start} planId={props.dive.planid} key={props.dive.planid} />
+      <td>{ props.dive.start >0 
+            ?<span>{new Date(props.dive.start + 60000*props.dive.tot_time).toLocaleTimeString('fi-FI') }</span>
             : <span>0</span>}
       
       </td>
