@@ -1,5 +1,6 @@
 import ReactDOM from 'react-dom'
 import App from './App';
+import './App.css'
 
 import {Provider} from 'react-redux'
 import diveReduser from './redusers/diveReduser'

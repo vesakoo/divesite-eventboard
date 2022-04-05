@@ -15,7 +15,8 @@ import { //foo,
 import DiveTeam from './DiveTeam';
 import { useDispatch, useSelector } from 'react-redux';
 import {Button} from 'react-bootstrap'
-import Countdown from './Coundown';
+import Countdown from './Countdown';
+import StartDive from './StartDive'
 
 //import TimePicker from 'react-time-picker'
 
@@ -26,8 +27,9 @@ const Dive = (props) =>{
     cancelValue: null,
     colKey: null,
   })
-
   const [includeInputVal, setIncludeInputVal] =useState(false)
+  const [showDiveTime, setshowDiveTime] = useState(false)
+  const [diveStartTimeBuff, setdiveStartTimeBuff] =useState(null)
   const dispatch = useDispatch()
 
   const tdStyle =(errors)=>{
@@ -87,8 +89,9 @@ const Dive = (props) =>{
                 { new Date(props.dive.start).toLocaleTimeString('fi-FI')}
               </time> 
             }{console.log('rendering...')}
-        </>
+            <StartDive />
 
+        </>
       )
       
 
@@ -152,11 +155,17 @@ const Dive = (props) =>{
       }
     }
     if(field ==='start'){
+      setdiveStartTimeBuff(new Date())
+      setshowDiveTime(true)
       const start =Date.now()
       const stop =  props.dive.tot_time*60*1000 + start
       dispatch(setStartTimeInDive({planId: planid, startTime: start }))
       dispatch(setStopTimeInDive({planId: planid, stopTime: stop }))
       
+    }
+    if(field==='startTimeBuff'){
+      console.log('jaa aikaa', e.target.value)
+      setdiveStartTimeBuff(e.target.value)
     }
   }
 
@@ -208,16 +217,17 @@ const Dive = (props) =>{
         : <span>{props.dive.tot_time} </span> }
          <Countdown dive={props.dive} counting={props.dive.tot_time} />
       </td> 
-      <td  onClick={(event)=>{ if(props.dive.start>0 && ( inEditMode.colKey !=='editStartTime')){
+      {/*<td  onClick={(event)=>{ if(props.dive.start>0 && ( inEditMode.colKey !=='editStartTime')){
                        enableEdit(event,'editStartTime')} 
                     }}  >
-        { props.dive.start ===0 && !(inEditMode.status && inEditMode.colKey==='startTime')
+        { !showDiveTime //&& !(inEditMode.status && inEditMode.colKey==='startTime')
         ? < Button  variant="secondary" size="sm" onClick={(e) =>{handleChange(e,'start',props.dive.planid)}}>Start</Button>
         : <div>
             {inputStartTime()}
           </div>
         } 
-      </td>
+      </td>*/}
+      <td><StartDive initTime={props.dive.start} planId={props.dive.planid} /></td>
       <td>{ props.dive.stop >0 
             ?<span>{new Date(props.dive.stop).toLocaleTimeString('fi-FI') }</span>
             : <span>0</span>}
