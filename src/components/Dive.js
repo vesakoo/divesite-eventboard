@@ -109,6 +109,10 @@ const Dive = (props) =>{
         dispatch(setStopTimeInDive({planId: planid, stopTime: stop }))
       }
     }
+    if(field === 'stop'){
+      const stop=Date.now()
+      dispatch(setStopTimeInDive({planId: props.dive.planid, stopTime: stop }))
+    }
     /*if(field ==='start'){
       setdiveStartTimeBuff(new Date())
       setshowDiveTime(true)
@@ -185,7 +189,11 @@ const Dive = (props) =>{
       </td>*/}
       <StartDive initTime={props.dive.start} planId={props.dive.planid} key={props.dive.planid} />
       <td>{ props.dive.start >0 
-            ?<span>{new Date(props.dive.start + 60000*props.dive.tot_time).toLocaleTimeString('fi-FI') }</span>
+            ?<span>
+                {new Date(props.dive.start + 60000*props.dive.tot_time).toLocaleTimeString('fi-FI') }
+                {' '}
+                <Button onClick={(e)=>{handleChange(e,'stop')}}>Stop Dive</Button>
+              </span>
             : <span>0</span>}
       
       </td>

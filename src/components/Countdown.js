@@ -20,7 +20,7 @@ const Countdown =({dive,counting}) => {
 
   useEffect(() => {
     
-    if(dive.start >0 && counting >0){
+    if(dive.start >0 && counting >0 && dive.stop === 0){
     const timer = setTimeout(() => {
       const timeLeft= counting*60000 + dive.start - Date.now()
       const timeLeftHrs = timeLeft>0 ?Math.floor(timeLeft/(60*60*1000)) : Math.floor(timeLeft/(60*60*1000))+1

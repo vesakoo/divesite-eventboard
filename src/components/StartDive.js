@@ -48,6 +48,7 @@ const onCancelStart =()=>{
 }
 
 const getSecondsFromHHMMSS = (value) => {
+  value = value.replace(/\./g,':')
   const [str1, str2, str3] = value.split(":");
 
   const val1 = Number(str1);
