@@ -39,7 +39,7 @@ const DiveBoard = () => {
           <th style={styleDiver}>Divers</th>
           <th style={stylePlan}>Plan</th>
           <th style={styleDur}>Cave</th>
-          <th style={styleDur}>Tot</th>
+          <th style={styleDur}>Tot</th> 
           <th>Start</th>
           <th>End</th>
         </tr>

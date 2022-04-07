@@ -38,6 +38,9 @@ const Dive = (props) =>{
       return ({borderColor: 'pink', borderWidth: 'thick'})
     }
   }
+  const maxWStyle={
+    width: '100%'
+  }
 
 
 
@@ -50,7 +53,7 @@ const Dive = (props) =>{
           onChange={(e)=>handleChange(e, fieldType, planId )} 
           onKeyDown={(e)=>{handleKeyDown(e,fieldType)}}
           //placeholder='0'
-          className="form-control"
+          //className="form-control"
           key={planId} autoFocus />
 
   )
@@ -59,15 +62,16 @@ const Dive = (props) =>{
   //todo add cancell
   const enableEdit = (event,colKey) =>{
        //console.log('enable:', inEditMode, event)
+    const cancelValue=colKey==='plan'?props.dive.plan:(colKey==='cavedur'?props.dive.cave_time:props.dive.tot_time)
     if(inEditMode.status !== true || inEditMode.colKey !== colKey){
-      setInEditMode({status: true, colKey: colKey})
+      setInEditMode({status: true, colKey: colKey, cancelValue})
     }
     if(event.target === 'td'){
       event.target.querySelector('input').focus()
     }
-    if(colKey === 'startTime'){
+    /*if(colKey === 'startTime'){
       setIncludeInputVal(true)
-    }
+    }*/
   }
 
   //todo add cancell
@@ -86,8 +90,22 @@ const Dive = (props) =>{
   }
 
   const handleKeyDown =(e,colKey)=>{
-    if (e.key === 'Enter') {
+    const planid =props.dive.planid
+    console.log('evnt', e)
+    if (e.key === 'Enter' && colKey !== 'plan') {
       disableEdit(e,colKey) 
+    }
+    if (e.key === 'Escape'){
+      if(colKey === 'plan'){
+        dispatch(setPlanInDive({planId: planid, plan: inEditMode.cancelValue})) 
+      }
+      if(colKey === 'cavedur'){
+        dispatch(setCaveDurationInDive({planId: planid, caveTime: inEditMode.cancelValue }))
+      }
+      if(colKey === 'totdur'){
+        dispatch(setTotalDurationInDive({planId: planid, totalTime: inEditMode.cancelValue }))
+      }
+      disableEdit(e,colKey)
     }
   }
 
@@ -105,10 +123,10 @@ const Dive = (props) =>{
     if(field === 'totdur'){
       const nval= e.target.value
       dispatch(setTotalDurationInDive({planId: planid, totalTime: nval }))
-      if(props.dive.start >0){
+      /*if(props.dive.start >0){
         const stop = props.dive.start + 60 * e.target.value *1000
         dispatch(setStopTimeInDive({planId: planid, stopTime: stop }))
-      }
+      }*/
     }
     if(field === 'stop'){
       const stop=Date.now()
@@ -154,12 +172,14 @@ const Dive = (props) =>{
           style={tdStyle(props.dive.plan ==='' || props.dive.plan ==='Give Plan' )}>
         {inEditMode.status && inEditMode.colKey === 'plan'
       ? <textarea type='text'
+          rows={3}
+          style={maxWStyle}
           name={`plan_${props.dive.planid}`}
           value={props.dive.plan} 
           onBlur={(event)=>{disableEdit(event,'plan')}} 
           onChange={(e)=>handleChange(e, 'plan', props.dive.planid )}
           onKeyDown={(e)=>{handleKeyDown(e,'plan')}} 
-          className="form-control"
+          //className="form-control"
           key={props.dive.planid} autoFocus />
       : <span>{props.dive.plan}</span>
       }</td>
@@ -177,6 +197,7 @@ const Dive = (props) =>{
         ? inputEdit('totdur',props.dive.planid,props.dive.tot_time)
         : <span>{props.dive.tot_time} </span> }
          <Countdown dive={props.dive} counting={props.dive.tot_time} />
+         <div> {props.dive.stop>0?<span><hr/>{Math.floor((props.dive.stop-props.dive.start)/60000)} (actual)</span>:<span></span>} </div>
       </td> 
       {/*<td  onClick={(event)=>{ if(props.dive.start>0 && ( inEditMode.colKey !=='editStartTime')){
                        enableEdit(event,'editStartTime')} 

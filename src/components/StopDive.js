@@ -100,7 +100,7 @@ return (
   <td onClick={() =>{ if(stopDive && !editMode){ setEditMode(true)} } }>
     <div>{initTime} (planned)</div>
     {stopDive
-      ?<span>
+      ?<span><hr/>
         {editMode
           ? <input type="text" onChange={onChange} onBlur={onBlur} value={value} autoFocus  /> 
           : <div style={style}  >{value}{' '} (actual)<br/> <Button variant="secondary" size="sm" onClick={onCancelStop}>Cancel stop</Button>  </div> 
