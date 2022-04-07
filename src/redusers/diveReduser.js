@@ -83,12 +83,17 @@ const createPlanId = (state =[]) =>{
         const diveInState =state.find(dive => dive.planid === planId)
         diveInState.divers.push(action.payload.diver)
       },
-      modifyDiverInDive(state,action){
+      removeDiverFromDive(state,action){
+        const planId = action.payload.planId
+        const diveInState =state.find(dive => dive.planid === planId)
+        diveInState.divers =diveInState.divers.filter(d =>d.diverid !== action.payload.diverId)
+      },
+      /*modifyDiverInDive(state,action){
         //const planId = action.payload.planId
         //const diver =action.payload.diver
         //const diveInState =state.find(dive => dive.planid === planId)
         //diveInState.divers =[diver]
-      },
+      },*/
       setPlanInDive(state ,action){
         console.log('action', action)
         const planId = action.payload.planId
@@ -131,6 +136,7 @@ const createPlanId = (state =[]) =>{
     newDive,
     setDiversInDive, 
     addDiverToDive,
+    removeDiverFromDive,
     setPlanInDive,
     setCaveDurationInDive,
     setTotalDurationInDive,

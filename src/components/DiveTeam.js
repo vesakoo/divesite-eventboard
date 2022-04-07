@@ -1,9 +1,9 @@
 import React, { useState} from 'react'
 import { useSelector,useDispatch } from 'react-redux';
 import { getDiverName, setDiverName, newDiver } from '../redusers/diverReduser';
-import { addDiverToDive } from '../redusers/diveReduser';
+import { addDiverToDive,removeDiverFromDive } from '../redusers/diveReduser';
 import Creatable, { useCreatable } from 'react-select/creatable'
-import {Button} from 'react-bootstrap'
+import {Button,CloseButton} from 'react-bootstrap'
 
 const DiveTeam = ({planid, diversInDive}) =>{
 
@@ -27,6 +27,14 @@ const DiveTeam = ({planid, diversInDive}) =>{
   }
 
   const disableEdit = (event,diverId) =>{
+    if(diverId>0 && getDiverName(diverId,allDivers) ===''){
+      const confirm = window.confirm('Remove diver from team?')
+      if(confirm){
+        removeDiver(diverId)
+      }else{
+        dispatch(setDiverName({diverId, diverName: inEditMode.cancelValue}))  
+      }
+    }
     setInEditMode({status: false, diverId})
   }
 
@@ -88,6 +96,11 @@ const addExistingDiverToDive=(e)=>{
 
 }
 
+const removeDiver=(diverId)=>{
+  console.log('remove', diverId)
+  dispatch(removeDiverFromDive({planId: planid, diverId}))
+}
+
 const addNewDiverToDive=  (e)=>{
   const newDiverObj = diverObj(e)
   newDiverObj.diverid =createDiverId(allDivers) 
@@ -102,10 +115,10 @@ const addNewDiverToDive=  (e)=>{
 
 
  const inputEdit = (planId,diver) =>(
-  <input type ='text' 
+  <input type ='text' className="x-input-text"
         name={diver.diverid}
         value={getDiverName(diver.diverid,allDivers)} 
-        className="form-control"
+        //className="form-control"
         key={diver.diverid} 
         autoFocus
         onBlur={(event)=>{disableEdit(event,diver.diverid)}} 
@@ -135,7 +148,7 @@ const optionsForCreatable =() =>(
   {diversInDive.map(diver => 
     <li key={diver.diverid} onClick={(e)=>enableEdit(e, diver.diverid) }>  
       { inEditMode.status && inEditMode.diverId === diver.diverid
-        ? inputEdit(planid,diver)
+        ? <span className="x-input">{inputEdit(planid,diver)} {/*<input type="reset" value=" X " onClick={()=>{ dispatch(setDiverName({diverId: diver.diverid, diverName: ''})) }} />*/}</span>
         : <span>{getDiverName(diver.diverid,allDivers)}</span>
       }
     </li> )}
