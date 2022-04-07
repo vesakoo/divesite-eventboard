@@ -1,27 +1,27 @@
 import { useState,useEffect } from "react";
-import {Button,Modal} from 'react-bootstrap'
+import {Button} from 'react-bootstrap'
 import { useDispatch } from "react-redux";
-import { setStartTimeInDive} from "../redusers/diveReduser";
+import { setStopTimeInDive} from "../redusers/diveReduser";
 
 
-
-
-
-const StartDive = ({initTime,planId}) =>{
+const StopDive = ({initTime,planId}) =>{
 
 const [value, setValue] = useState("0:00");
-const [startDive, setStartDive] = useState(false)
+const [stopDive, setStopDive] = useState(false)
 const [editMode,setEditMode] = useState(false)
 
-
+/*useEffect(() => {
+  setEditMode()
+},[initTime]) 
+*/
 const dispatch = useDispatch()
 
-const handleStartDive =() =>{
-  const startTime = Date.now()
+const handleStopDive =() =>{
+  const stopTime = Date.now()
   console.log()
-  setStartDive(true)
-  setValue( new Date(startTime).toLocaleTimeString() )
-  dispatch(setStartTimeInDive({planId, startTime  }))
+  setStopDive(true)
+  setValue( new Date(stopTime).toLocaleTimeString() )
+  dispatch(setStopTimeInDive({planId, stopTime: stopTime  }))
 }
 
 const onChange = (event) => {
@@ -37,20 +37,21 @@ const onBlur = (event) => {
   setEditMode(false)
   console.log(time)
   //const start = e.target.value !=='0:0:0'? new Date().setHours(...e.target.value.split(':')):0
-  const startTime = time !=='0:0:0'? new Date().setHours(...time.split(':')):0
-  dispatch(setStartTimeInDive({planId, startTime  }))
+  const stopTime = time !=='0:0:0'? new Date().setHours(...time.split(':')):0
+  dispatch(setStopTimeInDive({planId, stopTime: stopTime  }))
 
 };
 
-const onCancelStart =()=>{
-  const confirmed = window.confirm("Cancel dive start?");
+const onCancelStop =()=>{
+
+  const confirmed = window.confirm("Cancel dive stop?");
   if(!confirmed){
     return
   }
-  dispatch(setStartTimeInDive({planId, startTime: 0  }))
-  setStartDive(0)
+  dispatch(setStopTimeInDive({planId, stopTime: 0  }))
+  setStopDive(0)
   setValue("0:00")
-  console.log('Cancelling...')
+  console.log('Cancelling stop...')
 
 }
 
@@ -96,14 +97,21 @@ const style={
 }
 
 return (
-  <td onClick={() =>{ if(startDive && !editMode){ setEditMode(true)} } } > {startDive?
-  <span>{editMode
-    ? <input type="text" onChange={onChange} onBlur={onBlur} value={value} autoFocus  /> 
-    : <div style={style}  >{value}{' '} <Button variant="secondary" size="sm" onClick={onCancelStart}>Cancel start</Button>  </div> 
-  }</span>
-  :<span>{initTime}{' '} <Button onClick={()=>{handleStartDive()}} variant="secondary" size="sm">Start</Button></span> }</td>
+  <td onClick={() =>{ if(stopDive && !editMode){ setEditMode(true)} } }>
+    <div>{initTime} (planned)</div>
+    {stopDive
+      ?<span>
+        {editMode
+          ? <input type="text" onChange={onChange} onBlur={onBlur} value={value} autoFocus  /> 
+          : <div style={style}  >{value}{' '} (actual)<br/> <Button variant="secondary" size="sm" onClick={onCancelStop}>Cancel stop</Button>  </div> 
+        }
+      </span>
+    :<span>{initTime?<Button onClick={()=>{handleStopDive()}} variant="secondary" size="sm">Stop</Button> :''}</span>
+    }
+  </td>
 );
 
+console.log('init:',initTime)
 
 }
-export default StartDive
+export default StopDive

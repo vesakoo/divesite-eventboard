@@ -17,6 +17,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import {Button} from 'react-bootstrap'
 import Countdown from './Countdown';
 import StartDive from './StartDive'
+import StopDive from './StopDive';
 
 //import TimePicker from 'react-time-picker'
 
@@ -188,15 +189,19 @@ const Dive = (props) =>{
         } 
       </td>*/}
       <StartDive initTime={props.dive.start} planId={props.dive.planid} key={props.dive.planid} />
-      <td>{ props.dive.start >0 
+      {/*<td>{ props.dive.start >0 
             ?<span>
-                {new Date(props.dive.start + 60000*props.dive.tot_time).toLocaleTimeString('fi-FI') }
+                {new Date(props.dive.start + 60000*props.dive.tot_time).toLocaleTimeString() }
                 {' '}
                 <Button onClick={(e)=>{handleChange(e,'stop')}}>Stop Dive</Button>
               </span>
             : <span>0</span>}
       
-      </td>
+      </td>*/}
+      <StopDive initTime={props.dive.start >0 && props.dive.tot_time>0 ? new Date(props.dive.start + 60000*props.dive.tot_time).toLocaleTimeString():0    } 
+        planId={props.dive.planid} 
+        key={ `${props.dive.planid}_stop`}
+      />
     </tr>
   )
 
