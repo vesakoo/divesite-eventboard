@@ -32,6 +32,9 @@ input[type=reset]{
   width: 100px;
 }
 
+textarea  {
+  height: 100%;
+}
 
 
 .form-control  {
